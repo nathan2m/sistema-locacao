@@ -1,0 +1,86 @@
+Clientes {
+    Consultar {
+        GET     api/clientes        //Todos os clientes
+        GET     api/clientes/:id
+        { id, nome, cpf, data_nascimento }
+    }
+
+    Cadastrar {
+        POST    api/clientes
+        { nome, cpf, data_nascimento }
+    }
+
+    Atualizar {
+        PUT     api/clientes/:id
+        { id, nome, cpf, data_nascimento }
+    }
+
+    Excluir {
+        DELETE  api/clientes/:id
+        { id }
+    }
+}
+
+Filmes {
+    Consultar {
+        GET     api/filmes          //Todos os filmes
+        GET     api/filmes/:id
+        { id, titulo, classificacao_indicativa, lancamento }
+    }
+
+    Cadastrar {
+        POST    api/filmes
+        { titulo, classificacao_indicativa, lancamento }
+    }
+
+    Atualizar {
+        PUT     api/filmes/:id
+        { id, titulo, classificacao_indicativa, lancamento }
+    }
+
+    Excluir {
+        DELETE  api/filmes/:id
+        { id }
+    }
+}
+
+
+Locações {
+    Consultar {
+        GET     api/locacoes          //Todas as locações
+        GET     api/locacoes/:id
+        { id, cliente, filme, data_locacao, data_devolucao }
+    }
+
+    Cadastrar {
+        POST    api/locacoes
+        { cliente, filme, data_locacao, data_devolucao }
+    }
+
+    Atualizar {
+        PUT     api/locacoes/:id
+        { id, cliente, filme, data_locacao, data_devolucao }
+    }
+
+    Excluir {
+        DELETE  api/locacoes/:id
+        { id }
+    }
+}
+
+Regras de negócio {
+    Filmes do tipo "lancamento": prazo de entrega 2 dias
+    os outros: prazo de entrega 3 dias
+}
+
+Relatórios {
+    GET api/relatorios/clientes_atraso_devolucao
+
+    GET api/relatorios/filmes_nunca_alugados
+
+    GET api/relatorios/filmes_mais_alugados //5 filmes mais alugados no último ano
+
+    GET api/relatorios/filmes_menos_alugados //3 filmes menos alugados na última semana
+
+    GET api/relatorios/cliente_mais_alugou_filmes   //O segundo cliente que mais alugou filmes
+}
