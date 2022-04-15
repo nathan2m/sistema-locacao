@@ -1,0 +1,54 @@
+Clientes em atraso na devolução:
+
+SELECT c.* FROM `cliente` AS c
+INNER JOIN `locacao` AS l
+INNER JOIN `filme` AS f
+ON l.filme_id = f.id
+AND l.cliente_id = c.id
+AND l.data_devolucao IS NULL
+AND ((f.lancamento = 1 AND DATEDIFF(CURDATE(), l.data_locacao) > 2) OR (f.lancamento = 0 AND DATEDIFF(CURDATE(), l.data_locacao) > 3))
+GROUP BY c.id
+
+
+Filmes que nunca foram alugados:
+
+SELECT f.* FROM `filme` AS f
+LEFT JOIN `locacao` AS l
+ON f.id = l.filme_id
+WHERE l.filme_id IS NULL
+
+
+Cinco filmes mais alugados do último ano:
+
+SELECT f.*, COUNT(l.filme_id) AS vezes_alugado_ultimo_ano FROM `filme` AS f
+INNER JOIN `locacao` AS l
+ON f.id = l.filme_id
+AND DATEDIFF(CURDATE(), l.data_locacao) < 365
+GROUP BY l.filme_id
+ORDER BY vezes_alugado_ultimo_ano DESC
+LIMIT 5
+
+
+Três filmes menos alugados da última semana:
+
+SELECT f.*, COUNT(l.filme_id) AS vezes_alugado_ultima_semana FROM `filme` AS f
+INNER JOIN `locacao` AS l
+ON f.id = l.filme_id
+AND DATEDIFF(CURDATE(), l.data_locacao) < 7
+GROUP BY l.filme_id
+ORDER BY vezes_alugado_ultima_semana ASC
+LIMIT 3
+
+
+O segundo cliente que mais alugou filmes:
+
+SELECT l.* FROM `locacao` AS l
+INNER JOIN (
+    SELECT c.*, COUNT(l.cliente_id) AS locacoes FROM `cliente` AS c
+    INNER JOIN `locacao` AS l
+    ON c.id = l.cliente_id
+    GROUP BY l.cliente_id
+    ORDER BY locacoes DESC
+    LIMIT 1, 1
+) AS c
+ON l.cliente_id = c.id
