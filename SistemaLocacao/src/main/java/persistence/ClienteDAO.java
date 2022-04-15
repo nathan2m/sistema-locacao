@@ -45,6 +45,18 @@ public class ClienteDAO extends DAO<Cliente> {
         sql = null;
         return cs;
     }
+    public List<Cliente> obterTsRelatorio_ClientesAtraso() throws ServletException {
+        List<Cliente> cs = new ArrayList<>();
+        params.clear();
+        sql = "SELECT c.* FROM `cliente` AS c INNER JOIN `locacao` AS l INNER JOIN `filme` AS f ON l.filme_id = f.id AND l.cliente_id = c.id AND l.data_devolucao IS NULL AND ((f.lancamento = 1 AND DATEDIFF(CURDATE(), l.data_locacao) > 2) OR (f.lancamento = 0 AND DATEDIFF(CURDATE(), l.data_locacao) > 3)) GROUP BY c.id";
+        try {
+            cs = super.obterClasses(sql, params, getMapa());
+        } catch (SQLException | ClassNotFoundException ex) {
+            throw new ServletException(ex);
+        }
+        sql = null;
+        return cs;
+    }
 
     @Override
     public Cliente obterT(int Id) throws ServletException {

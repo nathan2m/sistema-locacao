@@ -23,8 +23,8 @@
                 <thead>
                     <tr>
                         <th>Id Locação</th>
-                        <th>Título Filme</th>
                         <th>Nome Cliente</th>
+                        <th>Título Filme</th>
                         <th>Data Locação</th>
                         <th>Data Devolução</th>
                         <th colspan="2">Ação</th>
@@ -34,8 +34,8 @@
                     <c:forEach items="${locacoes}" var="locacao">
                         <tr>
                             <td><c:out value="${locacao.id}"/></td>
-                            <td><c:out value="${locacao.filme.titulo}"/></td>
                             <td><c:out value="${locacao.cliente.nome}"/></td>
+                            <td><c:out value="${locacao.filme.titulo}"/></td>
                             <td><c:out value="${locacao.dataLocacaoFormatado}"/></td>
                             <td><c:out value="${locacao.dataDevolucaoFormatado}"/></td>
                             <td>

@@ -45,6 +45,18 @@ public class LocacaoDAO extends DAO<Locacao> {
         sql = null;
         return ls;
     }
+    public List<Locacao> obterTs_RelatorioLocacoesCliente() throws ServletException {
+        List<Locacao> ls = new ArrayList<>();
+        params.clear();
+        sql = "SELECT l.* FROM `locacao` AS l INNER JOIN (SELECT c.*, COUNT(l.cliente_id) AS locacoes FROM `cliente` AS c INNER JOIN `locacao` AS l ON c.id = l.cliente_id GROUP BY l.cliente_id ORDER BY locacoes DESC LIMIT 1, 1) AS c ON l.cliente_id = c.id";
+        try {
+            ls = super.obterClasses(sql, params, getMapa());
+        } catch (SQLException | ClassNotFoundException ex) {
+            throw new ServletException(ex);
+        }
+        sql = null;
+        return ls;
+    }
 
     @Override
     public Locacao obterT(int Id) throws ServletException {
