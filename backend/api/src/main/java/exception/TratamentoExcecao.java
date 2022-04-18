@@ -49,6 +49,11 @@ public class TratamentoExcecao extends HttpServlet {
         out.print(eo);
         out.flush();
     }
+    
+    private void setAccessControlHeaders(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -62,6 +67,7 @@ public class TratamentoExcecao extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        setAccessControlHeaders(response);
         processRequest(request, response);
     }
 
@@ -76,6 +82,7 @@ public class TratamentoExcecao extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        setAccessControlHeaders(response);
         processRequest(request, response);
     }
 

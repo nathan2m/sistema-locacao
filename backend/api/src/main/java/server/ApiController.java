@@ -39,6 +39,11 @@ public class ApiController extends HttpServlet {
         out.flush();
     }
 
+    private void setAccessControlHeaders(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    }
+
     private void checkPathInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         message = null;
         resourceObject = null;
@@ -56,16 +61,16 @@ public class ApiController extends HttpServlet {
             if (resource != null) {
                 if (!resource.equals("Relatorio")) {
                     resourceObject = ResourceFactory.create("server.resources." + resource + "Resource");
+                    if (pathInfoS.length == 3) {
+                        String idS = pathInfoS[2];
+                        try {
+                            id = Integer.parseInt(idS);
+                        } catch (NumberFormatException e) {
+                            throw new ServletException(e);
+                        }
+                    }
                 } else {
                     resourceExecuteObject = ResourceFactory.createExecute("server.resources." + resource + "ResourceExecute");
-                }
-            }
-            if (pathInfoS.length == 3) {
-                String idS = pathInfoS[2];
-                try {
-                    id = Integer.parseInt(idS);
-                } catch (NumberFormatException e) {
-                    throw new ServletException(e);
                 }
             }
         }
@@ -83,6 +88,7 @@ public class ApiController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        setAccessControlHeaders(response);
         try {
             checkPathInfo(request, response);
             if (resourceObject != null) {
@@ -110,12 +116,13 @@ public class ApiController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        setAccessControlHeaders(response);
         try {
             checkPathInfo(request, response);
             if (resourceObject != null) {
                 resourceObject.post(request, response);
             }
-            processRequest(request, response);            
+            processRequest(request, response);
         } catch (IOException | ServletException e) {
             throw new ServletException(e);
         }
@@ -132,6 +139,7 @@ public class ApiController extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        setAccessControlHeaders(response);
         try {
             checkPathInfo(request, response);
             if (resourceObject != null && id != null) {
@@ -154,6 +162,7 @@ public class ApiController extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        setAccessControlHeaders(response);
         try {
             checkPathInfo(request, response);
             if (resourceObject != null && id != null) {
