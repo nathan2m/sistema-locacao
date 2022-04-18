@@ -56,6 +56,8 @@ public abstract class DAO<T> {
             rs = pst.executeQuery();
             if (rs.next()) {
                 row = (T) rm.mapeamento(rs);
+            } else {
+                throw new SQLException("Registration not found!");
             }
             conn.commit();
         } catch (ClassNotFoundException | SQLException e) {

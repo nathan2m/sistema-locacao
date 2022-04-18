@@ -14,7 +14,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>TratamentoExcecao</servlet-name>
-        <url-pattern>/TratamentoExcecao</url-pattern>
+        <url-pattern>/exception</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
@@ -26,7 +26,7 @@
             java.lang.Exception
         </exception-type>
         <location>
-            /TratamentoExcecao
+            /exception
         </location>
     </error-page>
 </web-app>
