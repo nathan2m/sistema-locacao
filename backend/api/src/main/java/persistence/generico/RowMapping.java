@@ -7,6 +7,7 @@ package persistence.generico;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.servlet.ServletException;
 
 /**
  *
@@ -15,5 +16,5 @@ import java.sql.SQLException;
  */
 public interface RowMapping<T> {
 
-    T mapeamento(ResultSet rs) throws SQLException;
+    T mapeamento(ResultSet rs) throws SQLException, ServletException;
 }

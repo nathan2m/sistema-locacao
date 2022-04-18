@@ -6,6 +6,7 @@
 package server.resources;
 
 import java.util.List;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Filme;
@@ -20,21 +21,21 @@ import server.Resource;
 public class FilmeResource extends Resource {
 
     @Override
-    public String getAll(HttpServletRequest request, HttpServletResponse response) {
+    public String getAll(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         List<Filme> filmes = FilmeDAO.getInstance().obterTs();
         JSONArray ts = new JSONArray(filmes);
         return ts.toString();
     }
 
     @Override
-    public String getById(HttpServletRequest request, HttpServletResponse response, Integer id) {
+    public String getById(HttpServletRequest request, HttpServletResponse response, Integer id) throws ServletException {
         Filme filme = FilmeDAO.getInstance().obterT(id);
         JSONObject ts = new JSONObject(filme);
         return ts.toString();
     }
     
     @Override
-    protected void confirmarOperacao(HttpServletRequest request, HttpServletResponse response, String s, String operacao, Integer id) {
+    protected void confirmarOperacao(HttpServletRequest request, HttpServletResponse response, String s, String operacao, Integer id) throws ServletException {
         Filme filme = new Filme();
         if (!operacao.equals("Incluir") && id != null) {
             filme.setId(id);

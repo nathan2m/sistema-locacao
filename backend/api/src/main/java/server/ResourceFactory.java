@@ -5,6 +5,8 @@
  */
 package server;
 
+import javax.servlet.ServletException;
+
 /**
  *
  * @author Nathan
@@ -12,7 +14,7 @@ package server;
 public class ResourceFactory {
     private static Object objeto;
 
-    public static Resource create(String nomeClasse) {
+    public static Resource create(String nomeClasse) throws ServletException {
         objeto = instanciar(nomeClasse);
         if (!(objeto instanceof Resource)) {
             return null;
@@ -20,7 +22,7 @@ public class ResourceFactory {
         return (Resource) objeto;
     }
     
-    public static ResourceExecute createExecute(String nomeClasse) {
+    public static ResourceExecute createExecute(String nomeClasse) throws ServletException {
         objeto = instanciar(nomeClasse);
         if (!(objeto instanceof ResourceExecute)) {
             return null;
@@ -28,11 +30,11 @@ public class ResourceFactory {
         return (ResourceExecute) objeto;
     }
 
-    private static Object instanciar(String nomeClasse) {
+    private static Object instanciar(String nomeClasse) throws ServletException {
         try {
             return Class.forName(nomeClasse).newInstance();
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-            return null;
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            throw new ServletException(e);
         }
     }
 }

@@ -8,8 +8,7 @@ package server.resources;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Cliente;
@@ -24,21 +23,21 @@ import server.Resource;
 public class ClienteResource extends Resource {
 
     @Override
-    public String getAll(HttpServletRequest request, HttpServletResponse response) {
+    public String getAll(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         List<Cliente> clientes = ClienteDAO.getInstance().obterTs();
         JSONArray ts = new JSONArray(clientes);
         return ts.toString();
     }
 
     @Override
-    public String getById(HttpServletRequest request, HttpServletResponse response, Integer id) {
+    public String getById(HttpServletRequest request, HttpServletResponse response, Integer id) throws ServletException {
         Cliente cliente = ClienteDAO.getInstance().obterT(id);
         JSONObject ts = new JSONObject(cliente);
         return ts.toString();
     }
 
     @Override
-    protected void confirmarOperacao(HttpServletRequest request, HttpServletResponse response, String s, String operacao, Integer id) {
+    protected void confirmarOperacao(HttpServletRequest request, HttpServletResponse response, String s, String operacao, Integer id) throws ServletException {
         Cliente cliente = new Cliente();
         if (!operacao.equals("Incluir") && id != null) {
             cliente.setId(id);
@@ -51,8 +50,8 @@ public class ClienteResource extends Resource {
             if (dataNascimento != null && !dataNascimento.equals("")) {
                 try {
                     cliente.setDataNascimento(new SimpleDateFormat("yyyy-MM-dd").parse(dataNascimento));
-                } catch (ParseException ex) {
-                    Logger.getLogger(ClienteResource.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ParseException e) {
+                    throw new ServletException(e);
                 }
             }
         }

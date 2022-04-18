@@ -9,8 +9,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.servlet.ServletException;
 
 /**
  *
@@ -26,19 +25,18 @@ public class DataBaseLocator {
     private DataBaseLocator() {
     }
 
-    public Connection getConnection() throws SQLException, ClassNotFoundException {
+    public Connection getConnection() throws SQLException, ClassNotFoundException, ServletException {
         Class.forName("com.mysql.jdbc.Driver");
         Connection conn = null;
         try {
             conn = DriverManager.getConnection("jdbc:mysql://localhost/sistema_locacao", "root", "jbSKQPRjQtBKuDDS");
         } catch (SQLException e) {
-            Logger lgr = Logger.getLogger(Connection.class.getName());
-            lgr.log(Level.SEVERE, e.getMessage(), e);
+            throw new ServletException(e);
         }
         return conn;
     }
 
-    public static void closeResources(Connection conn, Statement st) throws SQLException {
+    public static void closeResources(Connection conn, Statement st) throws SQLException, ServletException {
         try {
             if (st != null) {
                 st.close();
@@ -47,8 +45,7 @@ public class DataBaseLocator {
                 conn.close();
             }
         } catch (SQLException e) {
-            Logger lgr = Logger.getLogger(Connection.class.getName());
-            lgr.log(Level.SEVERE, e.getMessage(), e);
+            throw new ServletException(e);
         }
     }
 }

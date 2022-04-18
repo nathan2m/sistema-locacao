@@ -8,8 +8,7 @@ package server.resources;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Locacao;
@@ -26,21 +25,21 @@ import server.Resource;
 public class LocacaoResource extends Resource {
 
     @Override
-    public String getAll(HttpServletRequest request, HttpServletResponse response) {
+    public String getAll(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         List<Locacao> locacoes = LocacaoDAO.getInstance().obterTs();
         JSONArray ts = new JSONArray(locacoes);
         return ts.toString();
     }
 
     @Override
-    public String getById(HttpServletRequest request, HttpServletResponse response, Integer id) {
+    public String getById(HttpServletRequest request, HttpServletResponse response, Integer id) throws ServletException {
         Locacao locacao = LocacaoDAO.getInstance().obterT(id);
         JSONObject ts = new JSONObject(locacao);
         return ts.toString();
     }
 
     @Override
-    protected void confirmarOperacao(HttpServletRequest request, HttpServletResponse response, String s, String operacao, Integer id) {
+    protected void confirmarOperacao(HttpServletRequest request, HttpServletResponse response, String s, String operacao, Integer id) throws ServletException {
         Locacao locacao = new Locacao();
         if (!operacao.equals("Incluir") && id != null) {
             locacao.setId(id);
@@ -54,15 +53,15 @@ public class LocacaoResource extends Resource {
             if (dataLocacao != null && !dataLocacao.equals("")) {
                 try {
                     locacao.setDataLocacao(new SimpleDateFormat("yyyy-MM-dd").parse(dataLocacao));
-                } catch (ParseException ex) {
-                    Logger.getLogger(LocacaoResource.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ParseException e) {
+                    throw new ServletException(e);
                 }
             }
             if (dataDevolucao != null && !dataDevolucao.equals("")) {
                 try {
                     locacao.setDataDevolucao(new SimpleDateFormat("yyyy-MM-dd").parse(dataDevolucao));
-                } catch (ParseException ex) {
-                    Logger.getLogger(LocacaoResource.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ParseException e) {
+                    throw new ServletException(e);
                 }
             }
         }

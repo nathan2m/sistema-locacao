@@ -11,16 +11,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.servlet.ServletException;
 
 /**
  *
  * @author Nathan
+ * @param <T>
  */
 public abstract class DAO<T> {
 
-    protected List<T> obterClasses(String sql, List<Object> params, RowMapping rm) throws ClassNotFoundException, SQLException {
+    protected List<T> obterClasses(String sql, List<Object> params, RowMapping rm) throws ClassNotFoundException, SQLException, ServletException {
         Connection conn = null;
         PreparedStatement pst = null;
         ResultSet rs;
@@ -36,15 +36,14 @@ public abstract class DAO<T> {
             }
             conn.commit();
         } catch (ClassNotFoundException | SQLException e) {
-            Logger lgr = Logger.getLogger(DAO.class.getName());
-            lgr.log(Level.SEVERE, e.getMessage(), e);
+            throw new ServletException(e);
         } finally {
             DataBaseLocator.closeResources(conn, pst);
         }
         return rows;
     }
 
-    protected T obterClasse(String sql, List<Object> params, RowMapping rm) throws SQLException, ClassNotFoundException {
+    protected T obterClasse(String sql, List<Object> params, RowMapping rm) throws SQLException, ClassNotFoundException, ServletException {
         Connection conn = null;
         PreparedStatement pst = null;
         ResultSet rs;
@@ -60,15 +59,14 @@ public abstract class DAO<T> {
             }
             conn.commit();
         } catch (ClassNotFoundException | SQLException e) {
-            Logger lgr = Logger.getLogger(DAO.class.getName());
-            lgr.log(Level.SEVERE, e.getMessage(), e);
+            throw new ServletException(e);
         } finally {
             DataBaseLocator.closeResources(conn, pst);
         }
         return row;
     }
 
-    protected void operacaoClasse(String sql, List<Object> params) throws SQLException, ClassNotFoundException {
+    protected void operacaoClasse(String sql, List<Object> params) throws SQLException, ClassNotFoundException, ServletException {
         Connection conn = null;
         PreparedStatement pst = null;
         try {
@@ -79,8 +77,7 @@ public abstract class DAO<T> {
             pst.execute();
             conn.commit();
         } catch (ClassNotFoundException | SQLException e) {
-            Logger lgr = Logger.getLogger(DAO.class.getName());
-            lgr.log(Level.SEVERE, e.getMessage(), e);
+            throw new ServletException(e);
         } finally {
             DataBaseLocator.closeResources(conn, pst);
         }
@@ -98,11 +95,11 @@ public abstract class DAO<T> {
         }
     }
 
-    public abstract List<T> obterTs();
+    public abstract List<T> obterTs() throws ServletException;
 
-    public abstract T obterT(int Id);
+    public abstract T obterT(int Id) throws ServletException;
 
-    public abstract void operacao(T t, String operacao);
+    public abstract void operacao(T t, String operacao) throws ServletException;
 
-    protected abstract RowMapping getMapa();
+    protected abstract RowMapping getMapa() throws ServletException;
 }

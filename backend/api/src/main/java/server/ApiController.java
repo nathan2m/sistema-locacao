@@ -39,7 +39,7 @@ public class ApiController extends HttpServlet {
         out.flush();
     }
 
-    private void checkPathInfo(HttpServletRequest request, HttpServletResponse response) {
+    private void checkPathInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         message = null;
         resourceObject = null;
         resourceExecuteObject = null;
@@ -65,6 +65,7 @@ public class ApiController extends HttpServlet {
                 try {
                     id = Integer.parseInt(idS);
                 } catch (NumberFormatException e) {
+                    throw new ServletException(e);
                 }
             }
         }
@@ -82,16 +83,20 @@ public class ApiController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        checkPathInfo(request, response);
-        if (resourceObject != null) {
-            message = (id != null)
-                    ? resourceObject.getById(request, response, id)
-                    : resourceObject.getAll(request, response);
+        try {
+            checkPathInfo(request, response);
+            if (resourceObject != null) {
+                message = (id != null)
+                        ? resourceObject.getById(request, response, id)
+                        : resourceObject.getAll(request, response);
+            }
+            if (resourceExecuteObject != null) {
+                message = resourceExecuteObject.execute(request, response);
+            }
+            processRequest(request, response);
+        } catch (IOException | ServletException e) {
+            throw new ServletException(e);
         }
-        if (resourceExecuteObject != null) {
-            message = resourceExecuteObject.execute(request, response);
-        }
-        processRequest(request, response);
     }
 
     /**
@@ -105,11 +110,15 @@ public class ApiController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        checkPathInfo(request, response);
-        if (resourceObject != null) {
-            resourceObject.post(request, response);
+        try {
+            checkPathInfo(request, response);
+            if (resourceObject != null) {
+                resourceObject.post(request, response);
+            }
+            processRequest(request, response);            
+        } catch (IOException | ServletException e) {
+            throw new ServletException(e);
         }
-        processRequest(request, response);
     }
 
     /**
@@ -123,11 +132,15 @@ public class ApiController extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        checkPathInfo(request, response);
-        if (resourceObject != null && id != null) {
-            resourceObject.put(request, response, id);
+        try {
+            checkPathInfo(request, response);
+            if (resourceObject != null && id != null) {
+                resourceObject.put(request, response, id);
+            }
+            processRequest(request, response);
+        } catch (IOException | ServletException e) {
+            throw new ServletException(e);
         }
-        processRequest(request, response);
     }
 
     /**
@@ -141,11 +154,15 @@ public class ApiController extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        checkPathInfo(request, response);
-        if (resourceObject != null && id != null) {
-            resourceObject.delete(request, response, id);
+        try {
+            checkPathInfo(request, response);
+            if (resourceObject != null && id != null) {
+                resourceObject.delete(request, response, id);
+            }
+            processRequest(request, response);
+        } catch (IOException | ServletException e) {
+            throw new ServletException(e);
         }
-        processRequest(request, response);
     }
 
     /**

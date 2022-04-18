@@ -9,8 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.servlet.ServletException;
 import model.Filme;
 import persistence.generico.DAO;
 import persistence.generico.RowMapping;
@@ -33,42 +32,41 @@ public class FilmeDAO extends DAO<Filme> {
         return instance;
     }
 
-    private List<Filme> obterTsGeral() {
+    private List<Filme> obterTsGeral() throws ServletException {
         List<Filme> fs = new ArrayList<>();
         params.clear();
         try {
             fs = super.obterClasses(sql, params, getMapa());
         } catch (SQLException | ClassNotFoundException e) {
-            Logger lgr = Logger.getLogger(FilmeDAO.class.getName());
-            lgr.log(Level.SEVERE, e.getMessage(), e);
+            throw new ServletException(e);
         }
         sql = null;
         return fs;
     }
 
     @Override
-    public List<Filme> obterTs() {
+    public List<Filme> obterTs() throws ServletException {
         sql = SQLConstructor.select(tabela, null);
         return obterTsGeral();
     }
 
-    public List<Filme> obterTsRelatorio_FilmesNuncaAlugados() {
+    public List<Filme> obterTsRelatorio_FilmesNuncaAlugados() throws ServletException {
         sql = "SELECT f.* FROM `filme` AS f LEFT JOIN `locacao` AS l ON f.id = l.filme_id WHERE l.filme_id IS NULL";
         return obterTsGeral();
     }
 
-    public List<Filme> obterTsRelatorio_FilmesMaisAlugados() {
+    public List<Filme> obterTsRelatorio_FilmesMaisAlugados() throws ServletException {
         sql = "SELECT f.*, COUNT(l.filme_id) AS vezes_alugado_ultimo_ano FROM `filme` AS f INNER JOIN `locacao` AS l ON f.id = l.filme_id AND DATEDIFF(CURDATE(), l.data_locacao) < 365 GROUP BY l.filme_id ORDER BY vezes_alugado_ultimo_ano DESC LIMIT 5";
         return obterTsGeral();
     }
 
-    public List<Filme> obterTsRelatorio_FilmesMenosAlugados() {
+    public List<Filme> obterTsRelatorio_FilmesMenosAlugados() throws ServletException {
         sql = "SELECT f.*, COUNT(l.filme_id) AS vezes_alugado_ultima_semana FROM `filme` AS f INNER JOIN `locacao` AS l ON f.id = l.filme_id AND DATEDIFF(CURDATE(), l.data_locacao) < 7 GROUP BY l.filme_id ORDER BY vezes_alugado_ultima_semana ASC LIMIT 3";
         return obterTsGeral();
     }
 
     @Override
-    public Filme obterT(int Id) {
+    public Filme obterT(int Id) throws ServletException {
         Filme f = new Filme();
         params.clear();
         sql = SQLConstructor.select(tabela, chavePrimaria);
@@ -76,15 +74,14 @@ public class FilmeDAO extends DAO<Filme> {
         try {
             f = super.obterClasse(sql, params, getMapa());
         } catch (ClassNotFoundException | SQLException e) {
-            Logger lgr = Logger.getLogger(FilmeDAO.class.getName());
-            lgr.log(Level.SEVERE, e.getMessage(), e);
+            throw new ServletException(e);
         }
         sql = null;
         return f;
     }
 
     @Override
-    public void operacao(Filme f, String operacao) {
+    public void operacao(Filme f, String operacao) throws ServletException {
         params.clear();
         if (operacao.equals("Excluir")) {
             sql = SQLConstructor.delete(tabela, chavePrimaria);
@@ -103,8 +100,7 @@ public class FilmeDAO extends DAO<Filme> {
         try {
             super.operacaoClasse(sql, params);
         } catch (SQLException | ClassNotFoundException e) {
-            Logger lgr = Logger.getLogger(FilmeDAO.class.getName());
-            lgr.log(Level.SEVERE, e.getMessage(), e);
+            throw new ServletException(e);
         }
         sql = null;
     }

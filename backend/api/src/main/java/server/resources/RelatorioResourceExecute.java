@@ -6,6 +6,7 @@
 package server.resources;
 
 import java.util.List;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Cliente;
@@ -24,7 +25,7 @@ import server.ResourceExecute;
 public class RelatorioResourceExecute implements ResourceExecute {
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         String pathInfo = request.getPathInfo();
         if (pathInfo != null) {
             String[] pathInfoS = pathInfo.split("/");

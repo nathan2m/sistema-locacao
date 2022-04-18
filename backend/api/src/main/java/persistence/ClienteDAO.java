@@ -9,8 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.servlet.ServletException;
 import model.Cliente;
 import persistence.generico.DAO;
 import persistence.generico.RowMapping;
@@ -34,36 +33,34 @@ public class ClienteDAO extends DAO<Cliente> {
     }
 
     @Override
-    public List<Cliente> obterTs() {
+    public List<Cliente> obterTs() throws ServletException {
         List<Cliente> cs = new ArrayList<>();
         params.clear();
         sql = SQLConstructor.select(tabela, null);
         try {
             cs = super.obterClasses(sql, params, getMapa());
         } catch (SQLException | ClassNotFoundException e) {
-            Logger lgr = Logger.getLogger(ClienteDAO.class.getName());
-            lgr.log(Level.SEVERE, e.getMessage(), e);
+            throw new ServletException(e);
         }
         sql = null;
         return cs;
     }
 
-    public List<Cliente> obterTsRelatorio_ClientesAtraso() {
+    public List<Cliente> obterTsRelatorio_ClientesAtraso() throws ServletException {
         List<Cliente> cs = new ArrayList<>();
         params.clear();
         sql = "SELECT c.* FROM `cliente` AS c INNER JOIN `locacao` AS l INNER JOIN `filme` AS f ON l.filme_id = f.id AND l.cliente_id = c.id AND l.data_devolucao IS NULL AND ((f.lancamento = 1 AND DATEDIFF(CURDATE(), l.data_locacao) > 2) OR (f.lancamento = 0 AND DATEDIFF(CURDATE(), l.data_locacao) > 3)) GROUP BY c.id";
         try {
             cs = super.obterClasses(sql, params, getMapa());
         } catch (SQLException | ClassNotFoundException e) {
-            Logger lgr = Logger.getLogger(ClienteDAO.class.getName());
-            lgr.log(Level.SEVERE, e.getMessage(), e);
+            throw new ServletException(e);
         }
         sql = null;
         return cs;
     }
 
     @Override
-    public Cliente obterT(int Id) {
+    public Cliente obterT(int Id) throws ServletException {
         Cliente c = new Cliente();
         params.clear();
         sql = SQLConstructor.select(tabela, chavePrimaria);
@@ -71,15 +68,14 @@ public class ClienteDAO extends DAO<Cliente> {
         try {
             c = super.obterClasse(sql, params, getMapa());
         } catch (ClassNotFoundException | SQLException e) {
-            Logger lgr = Logger.getLogger(ClienteDAO.class.getName());
-            lgr.log(Level.SEVERE, e.getMessage(), e);
+            throw new ServletException(e);
         }
         sql = null;
         return c;
     }
 
     @Override
-    public void operacao(Cliente c, String operacao) {
+    public void operacao(Cliente c, String operacao) throws ServletException {
         params.clear();
         if (operacao.equals("Excluir")) {
             sql = SQLConstructor.delete(tabela, chavePrimaria);
@@ -98,8 +94,7 @@ public class ClienteDAO extends DAO<Cliente> {
         try {
             super.operacaoClasse(sql, params);
         } catch (SQLException | ClassNotFoundException e) {
-            Logger lgr = Logger.getLogger(ClienteDAO.class.getName());
-            lgr.log(Level.SEVERE, e.getMessage(), e);
+            throw new ServletException(e);
         }
         sql = null;
     }
