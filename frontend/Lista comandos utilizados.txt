@@ -1,0 +1,5 @@
+npx create-react-app frontend-sistema-locacao // Cria projeto ReactJS
+
+//Dependencias
+
+yarn add react-router-dom axios bootstrap jquery
